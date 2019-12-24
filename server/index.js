@@ -12,6 +12,8 @@ app.use(express.json())
 // 跨域中间件，返回的是一个函数，所以要执行
 app.use(require('cors')())
 
+app.use('/uploads',express.static(__dirname + '/uploads'))
+
 // 分类的路由放到routers文件夹下
 // 使routes文件夹下的文件可以使用app实例，因为routes文件夹下的文件导出的是一个函数
 require('./routers/admin')(app)

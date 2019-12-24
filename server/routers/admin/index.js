@@ -34,11 +34,13 @@ module.exports = app => {
 
     // 获取分类详情返回到修改界面展示
     router.get('/:id', async (req, res) => {
-        console.log(typeof req.params.id)
-        const model = req.Model.findById(req.params.id, (err, data) => {
-            console.log(data)
-            res.send(data)
-        })
+        console.log(req.params.id)
+        const model = await req.Model.findById(req.params.id)
+        res.send(model)
+        // , (err, data) => {
+        //     console.log(data)
+        //     res.send(data)
+        // }
     })
 
     // 修改分类 传回后端储存
@@ -67,4 +69,16 @@ module.exports = app => {
         req.Model = require(`../../models/${modelName}`)
         next()
     }, router)
+
+
+    // 上传文件接口 -- 不属于子路由
+    const multer = require('multer')
+    // __dirname是绝对地址
+    const upload = multer({ dest: __dirname + '/../../uploads' })
+    app.post('/admin/api/upload', upload.single('file'), async (req, res) => {
+        // express中是没有req.file的，用了中间件相当于上面req.Model一样
+        const file = req.file
+        file.url = `http://localhost:3000/uploads/${file.filename}`
+        res.send(file)
+    })
 }

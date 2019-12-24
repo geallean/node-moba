@@ -55,10 +55,10 @@ export default {
     },
     // id存在时获取数据进行编辑
     async fetch () {
-      const res = await this.$http.get(`rset/categories/${this.id}`)
+      const res = await this.$http.get(`rest/categories/${this.id}`)
       console.log(res)
       this.model = res.data
-      //   console.log(this.model)
+      console.log(this.model)
     },
     async fetchParents () {
       // 直接使用分类列表获取
