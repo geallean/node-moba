@@ -1,0 +1,181 @@
+//reset
+* {
+	box-sizing: border-box;
+	outline: none;
+}
+
+html {
+	font-size: 13px;
+}
+
+body {
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	line-height: 1.2em;
+	background-color: #f1f1f1;
+	-webkit-font-smoothing: antialiased;
+}
+
+a {
+	color: #999;
+}
+
+// 定义变量
+$colors: (
+	'light': #f9f9f9,
+	'primary': #db9c3f,
+	'black': #000,
+	'white': #fff,
+	'dark': #222,
+	'dark-1': #343440,
+	'grey': #999
+);
+// 将color生成助手类
+@each $colorKey, $color in $colors {
+	.text-#{$colorKey} {
+		color: $color;
+	}
+	.bg-#{$colorKey} {
+		background-color: $color;
+	}
+}
+
+//text-align
+//用法：.text-left{text-align:left}
+@each $var in (left, center, right) {
+	.text-#{$var} {
+		text-align: $var;
+	}
+}
+
+// font-size
+// 用法：.fs-xs{font-size:10px}
+$base-font-size: 1rem;
+$font-sizes: (
+	// 10px
+		'xs': 0.7692,
+	// 12px
+		'sm': 0.9231,
+	// 13px
+		'md': 1,
+	// 14px
+		'lg': 1.0769,
+	//16px
+		'xl': 1.2308
+);
+
+@each $sizeKey, $size in $font-sizes {
+	.fs-#{$sizeKey} {
+		font-size: $size * $base-font-size;
+	}
+}
+
+//flex
+// 用法：
+// .jc-center{justify-content:center} .ai-center{align-items:cemter}
+// .d-flex .jc-center .ai-center => { display:flex;justify-content:center;align-items:cemter}
+.d-flex {
+	display: flex;
+}
+.flex-colums {
+	flex-direction: column;
+}
+// 主轴对齐方式
+$flex-jc: (
+	start: flex-start,
+	end: flex-end,
+	center: center,
+	between: space-between,
+	around: space-around
+);
+@each $key, $value in $flex-jc {
+	.jc-#{$key} {
+		justify-content: $value;
+	}
+}
+// 交叉轴对齐方式
+$flex-ai: (
+	start: flex-start,
+	end: flex-end,
+	center: center,
+	stretch: stretch
+);
+@each $key, $value in $flex-ai {
+	.ai-#{$key} {
+		align-items: $value;
+	}
+}
+
+.flex-1 {
+	flex: 1; // 简写：表示grow,shrink都是1
+}
+.flex-grow-1 {
+	flex-grow: 1;
+}
+
+// spacing
+// 0-5
+// 用法：.mt-1 => margin-top -- level1
+// 用法：.pb-2 => padding-bottom -- level2
+$spacing-types: (
+	m: margin,
+	p: padding
+);
+$spacing-directions: (
+	t: top,
+	r: right,
+	b: bottom,
+	l: left
+);
+// 定义基础size
+$spacing-base-size: 1rem;
+$spacing-sizes: (
+	0: 0,
+	1: 0.25,
+	2: 0.5,
+	3: 1,
+	4: 1.5,
+	5: 3
+);
+// m-0 => margin:0 ,mx-0 => margin-left/right:0
+@each $typeKey, $type in $spacing-types {
+	@each $directionKey, $direction in $spacing-directions {
+		@each $sizeKey, $size in $spacing-sizes {
+			// .mt-1{ margin-top:0.25rem}
+			.#{$typeKey}#{$directionKey}-#{$sizeKey} {
+				#{$type}-#{$direction}: $size * $spacing-base-size;
+			}
+			// m-0:{margin:0}
+			.#{$typeKey}-#{$sizeKey} {
+				#{$type}: $size * $spacing-base-size;
+			}
+			// mx-1 => margin-left/right{0.25rem}
+			// my-1 => margin-top/bottom{0.25rem}
+			.#{$typeKey}x-#{$sizeKey} {
+				#{$type}-left: $size * $spacing-base-size;
+				#{$type}-right: $size * $spacing-base-size;
+			}
+			.#{$typeKey}y-#{$sizeKey} {
+				#{$type}-top: $size * $spacing-base-size;
+				#{$type}-bottom: $size * $spacing-base-size;
+			}
+		}
+	}
+}
+
+.btn {
+	border: none;
+	border-radius: 0.1538rem;
+	font-size: map-get($font-sizes, 'sm') * $base-font-size;
+	padding: 0.3rem 0.6rem;
+}
+
+.nav {
+	.nav-item {
+		border-bottom: 3px solid transparent;
+		padding: 0.2rem;
+		&.active {
+			border-bottom: 3px solid #fff;
+		}
+	}
+}
