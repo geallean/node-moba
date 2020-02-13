@@ -1,22 +1,27 @@
 <template>
   <div>
-    <h1>{{id ? '编辑' : '新建'}}物品</h1>
+    <h1>{{id ? '编辑' : '新建'}}文章</h1>
     <el-form label-width="120px" @submit.native.prevent="save">
-      <el-form-item label="名称">
-        <el-input v-model="model.name"></el-input>
+      <el-form-item label="所属分类">
+        <el-select v-model="model.categories" multiple>
+          <!-- 真正存进数据库的是id -->
+          <el-option
+            v-for="item in categories"
+            :key="item._id"
+            :label="item.name"
+            :value="item._id"
+          ></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="图标">
-        <el-upload
-          class="avatar-uploader"
-          :action="$http.defaults.baseURL + '/upload'"
-          :show-file-list="false"
-          :on-success="afterUpload"
-        >
-          <!-- 将图片地址赋值到src -->
-          <img v-if="model.icon" :src="model.icon" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+
+      <el-form-item label="标题">
+        <el-input v-model="model.title"></el-input>
       </el-form-item>
+
+       <el-form-item label="详情">
+        <vue-editor v-model="model.body"></vue-editor>
+      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" native-type="submit">保存</el-button>
       </el-form-item>
@@ -25,6 +30,8 @@
 </template>
 
 <script>
+import { VueEditor } from 'vue2-editor'
+
 export default {
   props: {
     id: {}
@@ -32,25 +39,30 @@ export default {
   data () {
     return {
       // 后台返回的数据
-      model: {}
+      model: {},
+      categories: []
     }
+  },
+  components: {
+    VueEditor
   },
   created () {
     // 自动执行方法获取 编辑分类的数据
     // 如果id存在，才执行fetch()方法
     this.id && this.fetch()
+    this.fetchCategories()
   },
   methods: {
     async save () {
       console.log('save')
       let res
       if (this.id) { // id存在则put修改
-        res = await this.$http.put(`rest/items/${this.id}`, this.model)
+        res = await this.$http.put(`rest/articles/${this.id}`, this.model)
       } else { // 没有id则新增
-        res = await this.$http.post('rest/items', this.model)
+        res = await this.$http.post('rest/articles', this.model)
       }
       console.log(res)
-      this.$router.push('/items/list').catch(err => { console.log(err) })
+      this.$router.push('/articles/list').catch(err => { console.log(err) })
       this.$message({
         type: 'success',
         message: '保存成功'
@@ -58,17 +70,16 @@ export default {
     },
     // id存在时获取数据进行编辑
     async fetch () {
-      const res = await this.$http.get(`rest/items/${this.id}`)
+      const res = await this.$http.get(`rest/articles/${this.id}`)
       console.log(res)
       this.model = res.data
       //   console.log(this.model)
     },
-    // 上传图片后的回调
-    afterUpload (res) {
-      // vue 中的显示赋值 this.$set(object, propertyName, value)
-      this.$set(this.model, 'icon', res.url)
-      this.model.icon = res.url
-      console.log(res)
+    async fetchCategories () {
+      // 直接使用分类列表获取
+      const res = await this.$http.get('rest/categories')
+      // console.log(res)
+      this.categories = res.data
     }
   }
 }

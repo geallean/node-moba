@@ -3,10 +3,10 @@
     <h1>物品列表</h1>
     <el-table :data="heros">
       <el-table-column prop="_id" label="ID" width="230"></el-table-column>
-      <el-table-column prop="name" label="物品名称"></el-table-column>
-      <el-table-column prop="icon" label="物品图标">
+      <el-table-column prop="name" label="英雄名称"></el-table-column>
+      <el-table-column prop="avatar" label="英雄图标">
         <template slot-scope="scope">
-          <img :src="scope.row.icon" style="height:3rem" />
+          <img :src="scope.row.avatar" style="height:3rem" />
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="180">
@@ -15,7 +15,7 @@
           <el-button
             type="text"
             size="small"
-            @click="$router.push(`/items/edit/${scope.row._id}`)"
+            @click="$router.push(`/heros/edit/${scope.row._id}`)"
           >编辑</el-button>
           <el-button type="text" size="small" @click="remove(scope.row)">删除</el-button>
         </template>
@@ -38,7 +38,7 @@ export default {
   methods: {
     // 请求获取所有物品列表
     async fetch () {
-      const res = await this.$http.get('rest/items')
+      const res = await this.$http.get('rest/heros')
       this.heros = res.data
       console.log(this.heros)
     },
@@ -50,7 +50,7 @@ export default {
         type: 'warning'
       }).then(async () => {
         // 请求删除的接口
-        const res = await this.$http.delete(`rest/items/${row._id}`)
+        const res = await this.$http.delete(`rest/heros/${row._id}`)
         console.log(res)
         this.$message({
           type: 'success',
